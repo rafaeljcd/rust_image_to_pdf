@@ -19,6 +19,8 @@ fn main() -> Result<(), IOError>{
 
     for entry in fs::read_dir(cwd_path)? {
         let entry_dir = entry?;
+
+        println!("{}", entry_dir.file_name().to_string_lossy());
     }
 
     Ok(())
