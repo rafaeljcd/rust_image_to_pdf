@@ -1,15 +1,16 @@
 use std::env::{consts, current_dir};
 use std::io::Error as IOError;
-use walkdir::{WalkDir, DirEntry};
+use walkdir::{DirEntry, WalkDir};
 
-fn is_hidden_directory(entry: &DirEntry) -> bool{
-    entry.file_name()
+fn is_not_hidden(entry: &DirEntry) -> bool {
+    entry
+        .file_name()
         .to_str()
-        .map(|s| s.starts_with("."))
+        .map(|s| !s.starts_with(".") || entry.depth() == 0)
         .unwrap_or(false)
 }
 
-fn main() -> Result<(), IOError>{
+fn main() -> Result<(), IOError> {
     // print out the OS version
     let os = consts::OS;
     println!("{}", os);
@@ -24,11 +25,13 @@ fn main() -> Result<(), IOError>{
     // convert pathbuf to path
     let cwd_path = cwd.as_path();
 
-    for entry in WalkDir::new(cwd_path).into_iter().filter_entry(|e| !is_hidden_directory(e)){
+    for entry in WalkDir::new(cwd_path)
+        .into_iter()
+        .filter_entry(|e| is_not_hidden(e))
+    {
         let entry_dir = entry?;
 
         println!("{}", entry_dir.file_name().to_string_lossy())
-
     }
 
     Ok(())
