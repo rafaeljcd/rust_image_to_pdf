@@ -1,6 +1,13 @@
 use std::env::{consts, current_dir};
-use std::fs::{self};
 use std::io::Error as IOError;
+use walkdir::{WalkDir, DirEntry};
+
+fn is_hidden_directory(entry: &DirEntry) -> bool{
+    entry.file_name()
+        .to_str()
+        .map(|s| s.starts_with("."))
+        .unwrap_or(false)
+}
 
 fn main() -> Result<(), IOError>{
     // print out the OS version
@@ -17,10 +24,11 @@ fn main() -> Result<(), IOError>{
     // convert pathbuf to path
     let cwd_path = cwd.as_path();
 
-    for entry in fs::read_dir(cwd_path)? {
+    for entry in WalkDir::new(cwd_path).into_iter().filter_entry(|e| !is_hidden_directory(e)){
         let entry_dir = entry?;
 
-        println!("{}", entry_dir.file_name().to_string_lossy());
+        println!("{}", entry_dir.file_name().to_string_lossy())
+
     }
 
     Ok(())
