@@ -10,6 +10,14 @@ fn is_not_hidden(entry: &DirEntry) -> bool {
         .unwrap_or(false)
 }
 
+fn is_image_extension(entry: &DirEntry) -> bool {
+    entry
+        .path()
+        .extension()
+        .map(|s| s.to_string_lossy().ends_with("png"))
+        .unwrap_or(false)
+}
+
 fn main() -> Result<(), IOError> {
     // print out the OS version
     let os = consts::OS;
@@ -25,10 +33,11 @@ fn main() -> Result<(), IOError> {
     // convert pathbuf to path
     let cwd_path = cwd.as_path();
 
-    for entry in WalkDir::new(cwd_path).into_iter().filter_entry(|e| {
-        is_not_hidden(e)
-            && (!e.file_name().to_string_lossy().starts_with("target"))
-    }) {
+    let entries = WalkDir::new(cwd_path).into_iter().filter_entry(|e| {
+        is_not_hidden(e) && (!e.file_name().to_string_lossy().starts_with("target"))
+    });
+
+    for entry in entries {
         let entry_dir = entry?;
 
         println!("{}", entry_dir.into_path().to_string_lossy())
