@@ -6,7 +6,7 @@ This is mostly a hobby project in order to learn on how to code Rust.
 
 ## Check list of features
 
-- [ ] Read the files and directories where the script is called.
+- [x] Read the files and directories where the script is called.
 - [ ] Check for the image files.
 - [ ] Check for rust library to create a pdf file.
 - [ ] Create a blank pdf as a sample.
