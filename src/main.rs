@@ -1,3 +1,5 @@
+use std::env::consts;
 fn main() {
-    println!("Hello, world!");
+    // print out the OS version
+    println!("{}", consts::OS);
 }
