@@ -25,13 +25,13 @@ fn main() -> Result<(), IOError> {
     // convert pathbuf to path
     let cwd_path = cwd.as_path();
 
-    for entry in WalkDir::new(cwd_path)
-        .into_iter()
-        .filter_entry(|e| is_not_hidden(e))
-    {
+    for entry in WalkDir::new(cwd_path).into_iter().filter_entry(|e| {
+        is_not_hidden(e)
+            && (!e.file_name().to_string_lossy().starts_with("target"))
+    }) {
         let entry_dir = entry?;
 
-        println!("{}", entry_dir.file_name().to_string_lossy())
+        println!("{}", entry_dir.into_path().to_string_lossy())
     }
 
     Ok(())
